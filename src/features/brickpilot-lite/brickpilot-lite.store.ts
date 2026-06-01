@@ -3,14 +3,15 @@ import {
   type BrickPilotActions,
   type BrickPilotDifficulty,
   type BrickPilotRuntimeBridge,
+  type BrickPilotState,
   brickPilotReducer,
+  createInitialBrickPilotState,
 } from '../../game/game-runtime';
-import { brickPilotRepository } from './brickpilot-lite.repo';
 
 export type { BrickPilotActions, BrickPilotDifficulty, BrickPilotRuntimeBridge, BrickPilotState } from '../../game/game-runtime';
 
-export function useBrickPilotStore(): BrickPilotRuntimeBridge {
-  const [state, dispatch] = useReducer(brickPilotReducer, undefined, brickPilotRepository.load);
+export function useBrickPilotStore(loadState: () => BrickPilotState = createInitialBrickPilotState): BrickPilotRuntimeBridge {
+  const [state, dispatch] = useReducer(brickPilotReducer, undefined, loadState);
 
   const actions = useMemo<BrickPilotActions>(
     () => ({

@@ -15,15 +15,30 @@ function hasStorage(): boolean {
 export function createBrickPilotRepository(): BrickPilotRepository {
   return {
     load: () => {
-      if (!hasStorage()) return createInitialBrickPilotState();
+      const initialState = createInitialBrickPilotState();
+
+      if (!hasStorage()) return initialState;
 
       const rawSnapshot = window.localStorage.getItem(STORAGE_KEY);
-      if (!rawSnapshot) return createInitialBrickPilotState();
+      if (!rawSnapshot) return initialState;
 
       try {
-        return { ...createInitialBrickPilotState(), ...JSON.parse(rawSnapshot) } as BrickPilotState;
+        const snapshot = JSON.parse(rawSnapshot) as Partial<BrickPilotState>;
+        const bricksAreCurrent =
+          Array.isArray(snapshot.bricks) &&
+          snapshot.bricks.every((brick) => typeof brick.row === 'number' && typeof brick.alive === 'boolean');
+
+        return {
+          ...initialState,
+          ...snapshot,
+          ball: { ...initialState.ball, ...snapshot.ball },
+          paddle: { ...initialState.paddle, ...snapshot.paddle },
+          activePiece: { ...initialState.activePiece, ...snapshot.activePiece },
+          bricks: bricksAreCurrent ? snapshot.bricks ?? initialState.bricks : initialState.bricks,
+          preferences: { ...initialState.preferences, ...snapshot.preferences },
+        };
       } catch {
-        return createInitialBrickPilotState();
+        return initialState;
       }
     },
     save: (state: BrickPilotState) => {
