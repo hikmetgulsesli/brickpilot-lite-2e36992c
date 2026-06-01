@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BrickPilot Lite - Gameplay</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Space+Grotesk:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#002022",
+                        "on-primary-container": "#006970",
+                        "secondary": "#ecb2ff",
+                        "on-background": "#e5e1e4",
+                        "inverse-on-surface": "#313032",
+                        "on-secondary-fixed": "#320047",
+                        "secondary-fixed-dim": "#ecb2ff",
+                        "on-secondary": "#520071",
+                        "error": "#ffb4ab",
+                        "tertiary": "#fff3ed",
+                        "on-error": "#690005",
+                        "on-primary": "#00363a",
+                        "surface-container-low": "#1c1b1d",
+                        "tertiary-container": "#ffd0ae",
+                        "inverse-surface": "#e5e1e4",
+                        "tertiary-fixed": "#ffdcc4",
+                        "on-surface": "#e5e1e4",
+                        "on-secondary-fixed-variant": "#74009f",
+                        "surface-variant": "#353437",
+                        "background": "#131315",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-lowest": "#0e0e10",
+                        "surface-bright": "#39393b",
+                        "on-tertiary-container": "#924c00",
+                        "surface-dim": "#131315",
+                        "on-tertiary-fixed-variant": "#6f3900",
+                        "on-surface-variant": "#b9cacb",
+                        "surface-tint": "#00dbe9",
+                        "secondary-fixed": "#f8d8ff",
+                        "on-tertiary-fixed": "#2f1500",
+                        "primary": "#dbfcff",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-secondary-container": "#480063",
+                        "on-tertiary": "#4e2600",
+                        "surface-container-highest": "#353437",
+                        "inverse-primary": "#006970",
+                        "primary-container": "#00f0ff",
+                        "error-container": "#93000a",
+                        "outline-variant": "#3b494b",
+                        "outline": "#849495",
+                        "surface-container-high": "#2a2a2c",
+                        "tertiary-fixed-dim": "#ffb77f",
+                        "secondary-container": "#cf5cff",
+                        "surface-container": "#201f21",
+                        "primary-fixed": "#7df4ff",
+                        "primary-fixed-dim": "#00dbe9",
+                        "surface": "#131315"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "playfield-margin": "16px",
+                        "safe-area": "24px",
+                        "hud-padding": "12px",
+                        "unit": "4px",
+                        "gutter": "8px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["JetBrains Mono"],
+                        "label-caps": ["JetBrains Mono"],
+                        "display-arcade": ["Space Grotesk"],
+                        "headline-lg-mobile": ["Space Grotesk"],
+                        "stats-md": ["JetBrains Mono"],
+                        "headline-lg": ["Space Grotesk"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "display-arcade": ["48px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "stats-md": ["18px", { "lineHeight": "24px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .neon-border {
+            box-shadow: 0 0 15px rgba(0, 219, 233, 0.3), inset 0 0 10px rgba(0, 219, 233, 0.1);
+        }
+        .neon-glow-strong {
+            box-shadow: 0 0 20px rgba(0, 219, 233, 0.8), 0 0 40px rgba(0, 219, 233, 0.4);
+        }
+        .brick-glow-pink { box-shadow: 0 0 10px rgba(236, 178, 255, 0.6); }
+        .brick-glow-blue { box-shadow: 0 0 10px rgba(0, 240, 255, 0.6); }
+        .brick-glow-orange { box-shadow: 0 0 10px rgba(255, 208, 174, 0.6); }
+        
+        .hud-blur {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background h-screen overflow-hidden flex flex-col items-center justify-center font-body-md selection:bg-primary/30">
+<!-- Playfield Container -->
+<main class="relative w-full max-w-[1200px] aspect-video max-h-[921px] bg-surface-container-lowest border-2 border-primary/40 neon-border rounded flex flex-col m-playfield-margin overflow-hidden">
+<!-- HUD -->
+<header class="absolute top-0 left-0 w-full hud-blur bg-background/50 border-b border-primary/20 p-hud-padding flex justify-between items-center z-20">
+<div class="flex gap-gutter items-center">
+<div class="bg-surface-variant/80 border border-primary/30 rounded px-3 py-1 flex items-center gap-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">SCORE //</span>
+<span class="font-stats-md text-stats-md text-primary">00450</span>
+</div>
+</div>
+<div class="flex gap-gutter items-center">
+<div class="bg-surface-variant/80 border border-primary/30 rounded px-3 py-1 flex items-center gap-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">LVL //</span>
+<span class="font-stats-md text-stats-md text-primary">01</span>
+</div>
+</div>
+<div class="flex gap-gutter items-center">
+<div class="bg-surface-variant/80 border border-error/30 rounded px-3 py-1 flex items-center gap-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">LIVES //</span>
+<div class="flex gap-1 text-error">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="material-symbols-outlined text-[18px] text-surface-variant">favorite</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Game Canvas Area -->
+<div class="flex-1 relative mt-16 p-4">
+<!-- Bricks -->
+<div class="grid grid-cols-10 gap-2 mb-12">
+<!-- Row 1: Pink -->
+<div class="h-6 bg-secondary/80 rounded-[2px] brick-glow-pink border border-secondary"></div>
+<div class="h-6 bg-secondary/80 rounded-[2px] brick-glow-pink border border-secondary"></div>
+<div class="h-6 bg-secondary/80 rounded-[2px] brick-glow-pink border border-secondary"></div>
+<div class="h-6 bg-secondary/80 rounded-[2px] brick-glow-pink border border-secondary opacity-0"></div>
+<div class="h-6 bg-secondary/80 rounded-[2px] brick-glow-pink border border-secondary"></div>
+<div class="h-6 bg-secondary/80 rounded-[2px] brick-glow-pink border border-secondary"></div>
+<div class="h-6 bg-secondary/80 rounded-[2px] brick-glow-pink border border-secondary"></div>
+<div class="h-6 bg-secondary/80 rounded-[2px] brick-glow-pink border border-secondary"></div>
+<div class="h-6 bg-secondary/80 rounded-[2px] brick-glow-pink border border-secondary opacity-0"></div>
+<div class="h-6 bg-secondary/80 rounded-[2px] brick-glow-pink border border-secondary"></div>
+<!-- Row 2: Orange -->
+<div class="h-6 bg-tertiary-container/80 rounded-[2px] brick-glow-orange border border-tertiary-container"></div>
+<div class="h-6 bg-tertiary-container/80 rounded-[2px] brick-glow-orange border border-tertiary-container opacity-0"></div>
+<div class="h-6 bg-tertiary-container/80 rounded-[2px] brick-glow-orange border border-tertiary-container"></div>
+<div class="h-6 bg-tertiary-container/80 rounded-[2px] brick-glow-orange border border-tertiary-container"></div>
+<div class="h-6 bg-tertiary-container/80 rounded-[2px] brick-glow-orange border border-tertiary-container"></div>
+<div class="h-6 bg-tertiary-container/80 rounded-[2px] brick-glow-orange border border-tertiary-container opacity-0"></div>
+<div class="h-6 bg-tertiary-container/80 rounded-[2px] brick-glow-orange border border-tertiary-container"></div>
+<div class="h-6 bg-tertiary-container/80 rounded-[2px] brick-glow-orange border border-tertiary-container"></div>
+<div class="h-6 bg-tertiary-container/80 rounded-[2px] brick-glow-orange border border-tertiary-container"></div>
+<div class="h-6 bg-tertiary-container/80 rounded-[2px] brick-glow-orange border border-tertiary-container"></div>
+<!-- Row 3: Blue -->
+<div class="h-6 bg-primary-container/80 rounded-[2px] brick-glow-blue border border-primary-container opacity-0"></div>
+<div class="h-6 bg-primary-container/80 rounded-[2px] brick-glow-blue border border-primary-container"></div>
+<div class="h-6 bg-primary-container/80 rounded-[2px] brick-glow-blue border border-primary-container"></div>
+<div class="h-6 bg-primary-container/80 rounded-[2px] brick-glow-blue border border-primary-container"></div>
+<div class="h-6 bg-primary-container/80 rounded-[2px] brick-glow-blue border border-primary-container opacity-0"></div>
+<div class="h-6 bg-primary-container/80 rounded-[2px] brick-glow-blue border border-primary-container"></div>
+<div class="h-6 bg-primary-container/80 rounded-[2px] brick-glow-blue border border-primary-container"></div>
+<div class="h-6 bg-primary-container/80 rounded-[2px] brick-glow-blue border border-primary-container"></div>
+<div class="h-6 bg-primary-container/80 rounded-[2px] brick-glow-blue border border-primary-container"></div>
+<div class="h-6 bg-primary-container/80 rounded-[2px] brick-glow-blue border border-primary-container"></div>
+</div>
+<!-- Ball -->
+<div class="absolute w-4 h-4 bg-white rounded-full neon-glow-strong top-1/2 left-1/3 transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+<!-- Paddle -->
+<div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-32 h-4 bg-primary rounded-[2px] neon-glow-strong z-10 overflow-hidden">
+<div class="w-full h-[2px] bg-white absolute top-1/2 -translate-y-1/2 opacity-80"></div>
+</div>
+</div>
+<!-- Pause Overlay (Active in this state) -->
+<div class="absolute inset-0 bg-surface-container-lowest/80 hud-blur flex items-center justify-center z-30">
+<div class="bg-surface-charcoal/90 border-t border-primary p-8 flex flex-col items-center rounded-lg shadow-2xl max-w-md w-full mx-4 relative overflow-hidden">
+<!-- Background decorative lines -->
+<div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+<h2 class="font-display-arcade text-headline-lg text-primary mb-6 tracking-widest uppercase">System Paused</h2>
+<div class="flex flex-col gap-4 w-full mb-8">
+<button class="w-full py-3 border border-primary text-primary font-label-caps text-label-caps uppercase hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(0,219,233,0.3)] transition-all duration-200 active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                        Resume Session
+                    </button>
+<button class="w-full py-3 border border-outline text-outline font-label-caps text-label-caps uppercase hover:bg-outline/10 hover:text-on-surface transition-all duration-200 active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+                        Restart
+                    </button>
+</div>
+<div class="flex gap-6 text-on-surface-variant/60 font-body-md text-[12px]">
+<div class="flex items-center gap-2">
+<kbd class="px-2 py-1 bg-surface-variant rounded border border-outline-variant font-label-caps text-[10px]">SPACE</kbd>
+<span>to Resume</span>
+</div>
+<div class="flex items-center gap-2">
+<kbd class="px-2 py-1 bg-surface-variant rounded border border-outline-variant font-label-caps text-[10px]">R</kbd>
+<span>to Restart</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

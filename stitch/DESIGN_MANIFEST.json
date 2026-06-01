@@ -1,0 +1,24 @@
+[
+  {
+    "screenId": "dc0d7af86c194076a1a3b8b683e659de",
+    "title": "Gameplay - BrickPilot Lite",
+    "htmlFile": "dc0d7af86c194076a1a3b8b683e659de.html",
+    "deviceType": "DESKTOP",
+    "htmlUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sX2Y0ZTIwODIzNjI4ZjQ1MDRhNjc3YTRiYmNjOTgwOGM1EgsSBxCN19Wi9xcYAZIBJAoKcHJvamVjdF9pZBIWQhQxMjE1NDg5ODM0MzEwOTAzNDk1Mg&filename=&opi=96797242",
+    "localHtml": "/Users/setrox/projects/brickpilot-lite-2e36992c/stitch/dc0d7af86c194076a1a3b8b683e659de.html",
+    "surfaceIds": [
+      "SURF_GAMEPLAY"
+    ]
+  },
+  {
+    "screenId": "c83c68bda207450a96d36d3f091db717",
+    "title": "Game Settings - BrickPilot Lite",
+    "htmlFile": "c83c68bda207450a96d36d3f091db717.html",
+    "deviceType": "DESKTOP",
+    "htmlUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzAzZTEwOTFjMzJkNDQwMjNhNWI5OTAzNWFmMjkyNDc4EgsSBxCN19Wi9xcYAZIBJAoKcHJvamVjdF9pZBIWQhQxMjE1NDg5ODM0MzEwOTAzNDk1Mg&filename=&opi=96797242",
+    "localHtml": "/Users/setrox/projects/brickpilot-lite-2e36992c/stitch/c83c68bda207450a96d36d3f091db717.html",
+    "surfaceIds": [
+      "SURF_GAME_SETTINGS"
+    ]
+  }
+]

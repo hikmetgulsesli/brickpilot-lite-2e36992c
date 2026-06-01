@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BRICKPILOT // LITE - Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Space+Grotesk:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary-fixed": "#002022",
+                        "on-primary-container": "#006970",
+                        "secondary": "#ecb2ff",
+                        "on-background": "#e5e1e4",
+                        "inverse-on-surface": "#313032",
+                        "on-secondary-fixed": "#320047",
+                        "secondary-fixed-dim": "#ecb2ff",
+                        "on-secondary": "#520071",
+                        "error": "#ffb4ab",
+                        "tertiary": "#fff3ed",
+                        "on-error": "#690005",
+                        "on-primary": "#00363a",
+                        "surface-container-low": "#1c1b1d",
+                        "tertiary-container": "#ffd0ae",
+                        "inverse-surface": "#e5e1e4",
+                        "tertiary-fixed": "#ffdcc4",
+                        "on-surface": "#e5e1e4",
+                        "on-secondary-fixed-variant": "#74009f",
+                        "surface-variant": "#353437",
+                        "background": "#131315",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-lowest": "#0e0e10",
+                        "surface-bright": "#39393b",
+                        "on-tertiary-container": "#924c00",
+                        "surface-dim": "#131315",
+                        "on-tertiary-fixed-variant": "#6f3900",
+                        "on-surface-variant": "#b9cacb",
+                        "surface-tint": "#00dbe9",
+                        "secondary-fixed": "#f8d8ff",
+                        "on-tertiary-fixed": "#2f1500",
+                        "primary": "#dbfcff",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-secondary-container": "#480063",
+                        "on-tertiary": "#4e2600",
+                        "surface-container-highest": "#353437",
+                        "inverse-primary": "#006970",
+                        "primary-container": "#00f0ff",
+                        "error-container": "#93000a",
+                        "outline-variant": "#3b494b",
+                        "outline": "#849495",
+                        "surface-container-high": "#2a2a2c",
+                        "tertiary-fixed-dim": "#ffb77f",
+                        "secondary-container": "#cf5cff",
+                        "surface-container": "#201f21",
+                        "primary-fixed": "#7df4ff",
+                        "primary-fixed-dim": "#00dbe9",
+                        "surface": "#131315"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "playfield-margin": "16px",
+                        "safe-area": "24px",
+                        "hud-padding": "12px",
+                        "unit": "4px",
+                        "gutter": "8px"
+                    },
+                    fontFamily: {
+                        "body-md": ["JetBrains Mono"],
+                        "label-caps": ["JetBrains Mono"],
+                        "display-arcade": ["Space Grotesk"],
+                        "headline-lg-mobile": ["Space Grotesk"],
+                        "stats-md": ["JetBrains Mono"],
+                        "headline-lg": ["Space Grotesk"]
+                    },
+                    fontSize: {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "display-arcade": ["48px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "stats-md": ["18px", { "lineHeight": "24px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .crt-overlay {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+        .neon-border {
+            border: 1px solid theme('colors.primary');
+            box-shadow: 0 0 8px theme('colors.primary-container'), inset 0 0 4px theme('colors.primary-container');
+        }
+        .glow-text {
+            text-shadow: 0 0 10px theme('colors.primary-container');
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 8px;
+            background: theme('colors.primary');
+            border: 1px solid theme('colors.primary-container');
+            box-shadow: 0 0 5px theme('colors.primary-container');
+            cursor: pointer;
+            margin-top: -6px;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: theme('colors.surface-variant');
+            border: 1px solid theme('colors.outline');
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface h-screen w-screen overflow-hidden flex flex-col relative font-body-md select-none">
+<!-- TopAppBar -->
+<header class="bg-background/80 backdrop-blur-xl fixed top-0 w-full border-b border-primary/30 shadow-[0_0_15px_rgba(0,219,233,0.3)] flex justify-between items-center px-hud-padding h-16 z-50">
+<div class="font-display-arcade text-headline-lg-mobile md:text-headline-lg text-primary tracking-tighter glow-text">
+            BRICKPILOT // LITE
+        </div>
+<div class="flex gap-gutter">
+<button class="text-primary hover:bg-primary/10 transition-colors active:scale-95 duration-100 p-2 rounded">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+</button>
+<button class="text-outline hover:bg-primary/10 transition-colors active:scale-95 duration-100 p-2 rounded">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar (Hidden on Mobile, Visible on md+) -->
+<nav class="hidden md:flex bg-surface-container-lowest/95 backdrop-blur-md fixed left-0 top-0 h-full w-64 border-r border-primary/20 shadow-2xl shadow-primary/10 flex-col py-safe-area pt-20 z-40 transition-all duration-200 ease-in-out">
+<div class="px-hud-padding mb-8 border-b border-primary/20 pb-4">
+<div class="font-display-arcade text-primary text-headline-lg-mobile glow-text">SYSTEM CONFIG</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant mt-1">V1.0.4-STABLE</div>
+</div>
+<ul class="flex-1 space-y-2">
+<li>
+<a class="flex items-center gap-3 px-hud-padding py-3 text-on-surface-variant hover:text-primary hover:bg-surface-variant/30 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-label-caps text-label-caps">DASHBOARD</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-hud-padding py-3 text-primary border-r-2 border-primary bg-primary/5 transition-all duration-200 glow-text" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">videogame_asset</span>
+<span class="font-label-caps text-label-caps">CONTROLS</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-hud-padding py-3 text-on-surface-variant hover:text-primary hover:bg-surface-variant/30 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">volume_up</span>
+<span class="font-label-caps text-label-caps">AUDIO</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-hud-padding py-3 text-on-surface-variant hover:text-primary hover:bg-surface-variant/30 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-label-caps text-label-caps">SUPPORT</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto px-hud-padding">
+<button class="w-full border border-primary text-primary font-label-caps text-label-caps py-3 hover:bg-primary/10 transition-colors uppercase neon-border">
+                EXIT TO MENU
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 mt-16 md:ml-64 p-playfield-margin md:p-safe-area flex items-center justify-center relative bg-[url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&amp;fit=crop&amp;q=80&amp;w=2070')] bg-cover bg-center before:content-[''] before:absolute before:inset-0 before:bg-background/90" data-alt="A dark, abstract digital landscape featuring glowing grid lines converging towards a vanishing point. The overall aesthetic is heavily influenced by 1980s synthwave and cyberpunk visuals. Deep blacks and charcoal greys dominate the background, overlaid with an intense, neon cyan and magenta glow. The scene evokes a sense of high-speed digital traversal through a retro-futuristic arcade environment.">
+<div class="crt-overlay absolute inset-0"></div>
+<!-- Settings Modal / Overlay -->
+<div class="relative z-10 w-full max-w-2xl bg-surface-container/80 backdrop-blur-xl border-t border-primary p-6 md:p-8 neon-border shadow-[0_10px_30px_rgba(0,219,233,0.15)] rounded-DEFAULT">
+<div class="flex justify-between items-center mb-8 border-b border-outline-variant pb-4">
+<h1 class="font-display-arcade text-headline-lg-mobile md:text-headline-lg text-primary glow-text uppercase">Parameters</h1>
+<div class="font-stats-md text-stats-md text-primary-fixed bg-surface-variant/50 px-2 py-1 border border-primary/30">
+                    SYS.OP // ACTIVE
+                </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Left Column: Gameplay & Audio -->
+<div class="space-y-6">
+<!-- Difficulty -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">speed</span>
+                            DIFFICULTY_LEVEL
+                        </label>
+<div class="flex bg-surface-variant/50 border border-outline-variant rounded p-1">
+<button class="flex-1 py-1 font-label-caps text-label-caps text-on-surface hover:text-primary hover:bg-surface-bright transition-colors">EASY</button>
+<button class="flex-1 py-1 font-label-caps text-label-caps text-background bg-primary neon-border shadow-none">MED</button>
+<button class="flex-1 py-1 font-label-caps text-label-caps text-on-surface hover:text-error hover:bg-surface-bright transition-colors">HARD</button>
+</div>
+</div>
+<!-- Game Speed -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant flex justify-between">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">fast_forward</span> VELOCITY_MULTIPLIER</span>
+<span class="text-primary font-stats-md">1.2x</span>
+</label>
+<input class="w-full" max="2.0" min="0.5" step="0.1" type="range" value="1.2"/>
+</div>
+<!-- Audio Toggles -->
+<div class="space-y-4 pt-2 border-t border-outline-variant/50">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">music_note</span>
+                                SYNTH_TRACKS
+                            </label>
+<button aria-pressed="true" class="w-12 h-6 bg-primary/20 border border-primary rounded-full relative transition-colors duration-300">
+<span class="absolute right-1 top-1 w-4 h-4 bg-primary shadow-[0_0_5px_theme('colors.primary')] rounded-full"></span>
+</button>
+</div>
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-label-caps text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">graphic_eq</span>
+                                SFX_FEEDBACK
+                            </label>
+<button aria-pressed="false" class="w-12 h-6 bg-surface-variant border border-outline rounded-full relative transition-colors duration-300">
+<span class="absolute left-1 top-1 w-4 h-4 bg-outline rounded-full"></span>
+</button>
+</div>
+</div>
+</div>
+<!-- Right Column: Controls & Danger Zone -->
+<div class="space-y-6">
+<!-- Input Help -->
+<div class="bg-surface-container-low border border-primary/30 p-4 rounded-DEFAULT">
+<h3 class="font-label-caps text-label-caps text-primary mb-4 flex items-center gap-2 glow-text">
+<span class="material-symbols-outlined text-[16px]">keyboard</span>
+                            INPUT_MAPPING
+                        </h3>
+<ul class="space-y-3 font-body-md text-body-md text-on-surface">
+<li class="flex justify-between items-center">
+<span class="text-on-surface-variant">PADDLE_L/R</span>
+<div class="flex gap-1">
+<span class="px-2 py-1 bg-surface-variant border border-outline-variant rounded font-stats-md text-[12px]">←</span>
+<span class="px-2 py-1 bg-surface-variant border border-outline-variant rounded font-stats-md text-[12px]">→</span>
+</div>
+</li>
+<li class="flex justify-between items-center">
+<span class="text-on-surface-variant">PAUSE_EXEC</span>
+<span class="px-3 py-1 bg-surface-variant border border-outline-variant rounded font-stats-md text-[12px] uppercase">Space</span>
+</li>
+<li class="flex justify-between items-center">
+<span class="text-on-surface-variant">SYS_CONFIG</span>
+<span class="px-3 py-1 bg-surface-variant border border-outline-variant rounded font-stats-md text-[12px] uppercase">Esc</span>
+</li>
+</ul>
+</div>
+<!-- Danger Zone -->
+<div class="pt-4 border-t border-error/30">
+<button class="w-full border border-error text-error font-label-caps text-label-caps py-2 hover:bg-error/10 transition-colors uppercase flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[16px]">warning</span>
+                            PURGE_HIGH_SCORE
+                        </button>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="mt-8 pt-6 border-t border-outline-variant flex flex-col-reverse md:flex-row justify-end gap-4">
+<button class="px-6 py-3 font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface border border-transparent hover:border-outline-variant transition-all uppercase">
+                    RETURN TO GAMEPLAY
+                </button>
+<button class="px-6 py-3 font-label-caps text-label-caps text-background bg-primary hover:bg-primary-container neon-border transition-all uppercase flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[16px]">save</span>
+                    SAVE PREFERENCES
+                </button>
+</div>
+</div>
+</main>
+</body></html>

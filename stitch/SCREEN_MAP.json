@@ -1,0 +1,20 @@
+[
+  {
+    "screenId": "dc0d7af86c194076a1a3b8b683e659de",
+    "name": "Gameplay - BrickPilot Lite",
+    "type": "game",
+    "description": "Gameplay - BrickPilot Lite screen",
+    "surfaceIds": [
+      "SURF_GAMEPLAY"
+    ]
+  },
+  {
+    "screenId": "c83c68bda207450a96d36d3f091db717",
+    "name": "Game Settings - BrickPilot Lite",
+    "type": "settings",
+    "description": "Game Settings - BrickPilot Lite screen",
+    "surfaceIds": [
+      "SURF_GAME_SETTINGS"
+    ]
+  }
+]
