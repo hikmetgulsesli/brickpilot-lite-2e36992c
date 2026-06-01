@@ -1,24 +1,14 @@
-export type BrickPilotCell = string | null;
-
 export type BrickPilotDifficulty = 'easy' | 'medium' | 'hard';
 
 export type BrickPilotView = 'gameplay' | 'settings';
 
 export type BrickPilotStatus = 'ready' | 'running' | 'paused' | 'game-over';
 
-export interface BrickPilotPiece {
-  id: number;
-  type: 'I' | 'O' | 'T' | 'L';
+export interface BrickPilotBall {
   x: number;
   y: number;
-  rotation: number;
-}
-
-export interface BrickPilotBrick {
-  id: number;
-  x: number;
-  y: number;
-  strength: number;
+  dx: number;
+  dy: number;
 }
 
 export interface BrickPilotPaddle {
@@ -26,11 +16,19 @@ export interface BrickPilotPaddle {
   width: number;
 }
 
-export interface BrickPilotBall {
+export interface BrickPilotBrick {
+  id: number;
+  row: number;
+  col: number;
+  alive: boolean;
+  points: number;
+}
+
+export interface BrickPilotPiece {
+  id: number;
+  type: 'ball';
   x: number;
   y: number;
-  dx: number;
-  dy: number;
 }
 
 export interface BrickPilotPreferences {
@@ -43,17 +41,15 @@ export interface BrickPilotPreferences {
 export interface BrickPilotState {
   view: BrickPilotView;
   status: BrickPilotStatus;
-  board: BrickPilotCell[][];
-  activePiece: BrickPilotPiece;
-  nextPiece: BrickPilotPiece;
-  bricks: BrickPilotBrick[];
-  paddle: BrickPilotPaddle;
   ball: BrickPilotBall;
-  lives: number;
+  paddle: BrickPilotPaddle;
+  bricks: BrickPilotBrick[];
+  activePiece: BrickPilotPiece;
   score: number;
   highScore: number;
   level: number;
   linesCleared: number;
+  lives: number;
   tick: number;
   preferences: BrickPilotPreferences;
   lastAction: string;
@@ -106,67 +102,65 @@ export interface BrickPilotRuntimeBridge {
 }
 
 export const BOARD_WIDTH = 10;
-export const BOARD_HEIGHT = 20;
+export const BOARD_HEIGHT = 16;
 
-const PIECES: BrickPilotPiece['type'][] = ['I', 'O', 'T', 'L'];
-const BRICK_ROWS = 5;
-const BRICK_POINTS = 25;
+const PADDLE_WIDTH = 2.25;
 const STARTING_LIVES = 3;
+const BRICK_ROWS = 4;
+const BRICK_COLS = 10;
 
-export function createEmptyBoard(): BrickPilotCell[][] {
-  return Array.from({ length: BOARD_HEIGHT }, () => Array.from<BrickPilotCell>({ length: BOARD_WIDTH }).fill(null));
+function createBall(level = 1): BrickPilotBall {
+  const velocity = 0.65 + Math.min(level - 1, 4) * 0.08;
+  return {
+    x: BOARD_WIDTH / 2,
+    y: BOARD_HEIGHT - 3,
+    dx: velocity,
+    dy: -velocity,
+  };
+}
+
+function createPaddle(): BrickPilotPaddle {
+  return {
+    x: BOARD_WIDTH / 2 - PADDLE_WIDTH / 2,
+    width: PADDLE_WIDTH,
+  };
+}
+
+function createBrickWall(level = 1): BrickPilotBrick[] {
+  return Array.from({ length: BRICK_ROWS * BRICK_COLS }, (_, index) => {
+    const row = Math.floor(index / BRICK_COLS);
+    return {
+      id: index,
+      row,
+      col: index % BRICK_COLS,
+      alive: true,
+      points: (BRICK_ROWS - row) * 10 * level,
+    };
+  });
 }
 
 export function createPiece(id: number): BrickPilotPiece {
   return {
     id,
-    type: PIECES[id % PIECES.length],
-    x: Math.floor(BOARD_WIDTH / 2) - 1,
-    y: 0,
-    rotation: 0,
+    type: 'ball',
+    x: BOARD_WIDTH / 2,
+    y: BOARD_HEIGHT - 3,
   };
 }
 
-export function createBricks(level = 1): BrickPilotBrick[] {
-  const rows = Math.min(BRICK_ROWS + Math.floor((level - 1) / 2), 8);
-
-  return Array.from({ length: rows * BOARD_WIDTH }, (_, index) => ({
-    id: index + level * 100,
-    x: index % BOARD_WIDTH,
-    y: Math.floor(index / BOARD_WIDTH),
-    strength: 1 + Math.floor((level - 1) / 3),
-  }));
-}
-
-function createBoardFromBricks(bricks: BrickPilotBrick[]): BrickPilotCell[][] {
-  const board = createEmptyBoard();
-
-  for (const brick of bricks) {
-    if (brick.y >= 0 && brick.y < BOARD_HEIGHT && brick.x >= 0 && brick.x < BOARD_WIDTH) {
-      board[brick.y][brick.x] = brick.strength > 1 ? 'strong-brick' : 'brick';
-    }
-  }
-
-  return board;
-}
-
 export function createInitialBrickPilotState(): BrickPilotState {
-  const bricks = createBricks();
-
   return {
     view: 'gameplay',
     status: 'ready',
-    board: createBoardFromBricks(bricks),
+    ball: createBall(),
+    paddle: createPaddle(),
+    bricks: createBrickWall(),
     activePiece: createPiece(0),
-    nextPiece: createPiece(1),
-    bricks,
-    paddle: { x: Math.floor(BOARD_WIDTH / 2) - 1, width: 3 },
-    ball: { x: Math.floor(BOARD_WIDTH / 2), y: BOARD_HEIGHT - 4, dx: 1, dy: -1 },
-    lives: STARTING_LIVES,
     score: 0,
     highScore: 0,
     level: 1,
     linesCleared: 0,
+    lives: STARTING_LIVES,
     tick: 0,
     preferences: {
       difficulty: 'medium',
@@ -182,119 +176,124 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-function resetBall(): BrickPilotBall {
-  return { x: Math.floor(BOARD_WIDTH / 2), y: BOARD_HEIGHT - 4, dx: 1, dy: -1 };
+function paddleStep(difficulty: BrickPilotDifficulty): number {
+  if (difficulty === 'hard') return 0.8;
+  if (difficulty === 'easy') return 1.35;
+  return 1.05;
 }
 
-function resetRound(state: BrickPilotState): BrickPilotState {
-  const nextState = {
-    ...state,
-    paddle: { ...state.paddle, x: Math.floor(BOARD_WIDTH / 2) - 1 },
-    ball: resetBall(),
-  };
-
-  return { ...nextState, activePiece: pieceFromRuntime(nextState) };
-}
-
-function pieceFromRuntime(state: Pick<BrickPilotState, 'ball' | 'paddle' | 'tick'>): BrickPilotPiece {
+function resetBall(state: BrickPilotState): Pick<BrickPilotState, 'ball' | 'activePiece'> {
+  const ball = createBall(state.level);
   return {
-    id: state.tick,
-    type: 'O',
-    x: Math.round(state.ball.x),
-    y: Math.round(state.ball.y),
-    rotation: state.paddle.x,
+    ball,
+    activePiece: { ...state.activePiece, x: ball.x, y: ball.y },
   };
 }
 
-function applyScore(state: BrickPilotState, score: number): Pick<BrickPilotState, 'score' | 'highScore'> {
-  return {
-    score,
-    highScore: Math.max(state.highScore, score),
-  };
-}
-
-function advanceBreakout(state: BrickPilotState): BrickPilotState {
-  if (state.status !== 'running') {
-    return { ...state, lastAction: 'tick' };
+function resetRound(state: BrickPilotState, nextLives: number): BrickPilotState {
+  if (nextLives <= 0) {
+    return {
+      ...state,
+      ...resetBall(state),
+      lives: 0,
+      status: 'game-over',
+      highScore: Math.max(state.highScore, state.score),
+      lastAction: 'game-over',
+    };
   }
 
+  return {
+    ...state,
+    ...resetBall(state),
+    lives: nextLives,
+    status: 'paused',
+    lastAction: 'life-lost',
+  };
+}
+
+function advanceLevel(state: BrickPilotState): BrickPilotState {
+  const level = state.level + 1;
+  return {
+    ...state,
+    level,
+    bricks: createBrickWall(level),
+    ...resetBall({ ...state, level }),
+    status: 'paused',
+    lastAction: 'level-complete',
+  };
+}
+
+function progressBall(state: BrickPilotState): BrickPilotState {
+  if (state.status !== 'running') return { ...state, tick: state.tick + 1, lastAction: 'tick' };
+
   let ball: BrickPilotBall = {
+    ...state.ball,
     x: state.ball.x + state.ball.dx,
     y: state.ball.y + state.ball.dy,
-    dx: state.ball.dx,
-    dy: state.ball.dy,
   };
 
-  if (ball.x <= 0 || ball.x >= BOARD_WIDTH - 1) {
-    ball = { ...ball, x: clamp(ball.x, 0, BOARD_WIDTH - 1), dx: -ball.dx };
+  if (ball.x <= 0 || ball.x >= BOARD_WIDTH) {
+    ball = { ...ball, x: clamp(ball.x, 0, BOARD_WIDTH), dx: -ball.dx };
   }
 
   if (ball.y <= 0) {
     ball = { ...ball, y: 0, dy: Math.abs(ball.dy) };
   }
 
-  const paddleY = BOARD_HEIGHT - 2;
-  const paddleLeft = state.paddle.x;
-  const paddleRight = state.paddle.x + state.paddle.width - 1;
-  const ballColumn = Math.round(ball.x);
-
-  if (ball.dy > 0 && Math.round(ball.y) >= paddleY && ballColumn >= paddleLeft && ballColumn <= paddleRight) {
-    const offset = ballColumn - (paddleLeft + Math.floor(state.paddle.width / 2));
-    ball = { ...ball, y: paddleY - 1, dx: clamp(offset, -1, 1) || ball.dx, dy: -Math.abs(ball.dy) };
+  const paddleTop = BOARD_HEIGHT - 1.5;
+  const paddleEnd = state.paddle.x + state.paddle.width;
+  const hitsPaddle = ball.dy > 0 && ball.y >= paddleTop && ball.x >= state.paddle.x && ball.x <= paddleEnd;
+  if (hitsPaddle) {
+    const impact = (ball.x - (state.paddle.x + state.paddle.width / 2)) / (state.paddle.width / 2);
+    ball = { ...ball, y: paddleTop, dx: clamp(ball.dx + impact * 0.18, -1.1, 1.1), dy: -Math.abs(ball.dy) };
   }
 
-  if (ball.y >= BOARD_HEIGHT - 1) {
-    const lives = state.lives - 1;
-    const missedState: BrickPilotState = {
-      ...state,
-      lives,
-      status: lives > 0 ? state.status : 'game-over',
-      tick: state.tick + 1,
-      lastAction: lives > 0 ? 'life-lost' : 'game-over',
-    };
+  let score = state.score;
+  let bricks = state.bricks;
+  let linesCleared = state.linesCleared;
+  const hitBrick = state.bricks.find(
+    (brick) =>
+      brick.alive &&
+      ball.y >= brick.row &&
+      ball.y < brick.row + 1 &&
+      ball.x >= brick.col &&
+      ball.x < brick.col + 1,
+  );
 
-    return resetRound(missedState);
+  if (hitBrick) {
+    bricks = state.bricks.map((brick) => (brick.id === hitBrick.id ? { ...brick, alive: false } : brick));
+    score += hitBrick.points;
+    linesCleared += 1;
+    ball = { ...ball, dy: Math.abs(ball.dy) };
   }
 
-  const hitIndex = state.bricks.findIndex((brick) => brick.x === ballColumn && brick.y === Math.round(ball.y));
+  const nextState: BrickPilotState = {
+    ...state,
+    ball,
+    activePiece: { ...state.activePiece, x: ball.x, y: ball.y },
+    bricks,
+    score,
+    highScore: Math.max(state.highScore, score),
+    linesCleared,
+    tick: state.tick + 1,
+    lastAction: 'tick',
+  };
 
-  if (hitIndex >= 0) {
-    const hitBrick = state.bricks[hitIndex];
-    const damagedBrick = { ...hitBrick, strength: hitBrick.strength - 1 };
-    const bricks =
-      damagedBrick.strength > 0
-        ? state.bricks.map((brick, index) => (index === hitIndex ? damagedBrick : brick))
-        : state.bricks.filter((_, index) => index !== hitIndex);
-    const score = state.score + BRICK_POINTS * state.level;
-    const clearedBricks = state.linesCleared + (damagedBrick.strength > 0 ? 0 : 1);
-    const levelComplete = bricks.length === 0;
-    const level = levelComplete ? state.level + 1 : Math.max(state.level, Math.floor(clearedBricks / 20) + 1);
-    const nextBricks = levelComplete ? createBricks(level) : bricks;
-    const scoredState = {
-      ...state,
-      ...applyScore(state, score),
-      bricks: nextBricks,
-      board: createBoardFromBricks(nextBricks),
-      ball: { ...ball, dy: -ball.dy },
-      level,
-      linesCleared: clearedBricks,
-      tick: state.tick + 1,
-      lastAction: levelComplete ? 'level-complete' : 'brick-hit',
-    };
-
-    return { ...scoredState, activePiece: pieceFromRuntime(scoredState) };
-  }
-
-  const nextState = { ...state, ball, tick: state.tick + 1, lastAction: 'tick' };
-
-  return { ...nextState, activePiece: pieceFromRuntime(nextState) };
+  if (ball.y > BOARD_HEIGHT) return resetRound(nextState, state.lives - 1);
+  if (bricks.every((brick) => !brick.alive)) return advanceLevel(nextState);
+  return nextState;
 }
 
 export function brickPilotReducer(state: BrickPilotState, action: BrickPilotAction): BrickPilotState {
   switch (action.type) {
     case 'start':
     case 'resume':
-      return { ...state, view: 'gameplay', status: 'running', lastAction: action.type };
+      return {
+        ...state,
+        view: 'gameplay',
+        status: state.status === 'game-over' ? 'game-over' : 'running',
+        lastAction: action.type,
+      };
     case 'pause':
       return { ...state, status: 'paused', lastAction: action.type };
     case 'restart':
@@ -338,43 +337,25 @@ export function brickPilotReducer(state: BrickPilotState, action: BrickPilotActi
     case 'purge-high-score':
       return { ...state, highScore: 0, lastAction: action.type };
     case 'move-left':
-    case 'move-right': {
-      const direction = action.type === 'move-left' ? -1 : 1;
-      const nextState = {
+      return {
         ...state,
-        paddle: { ...state.paddle, x: clamp(state.paddle.x + direction, 0, BOARD_WIDTH - state.paddle.width) },
+        paddle: { ...state.paddle, x: clamp(state.paddle.x - paddleStep(state.preferences.difficulty), 0, BOARD_WIDTH - state.paddle.width) },
         lastAction: action.type,
       };
-
-      return { ...nextState, activePiece: pieceFromRuntime(nextState) };
-    }
+    case 'move-right':
+      return {
+        ...state,
+        paddle: { ...state.paddle, x: clamp(state.paddle.x + paddleStep(state.preferences.difficulty), 0, BOARD_WIDTH - state.paddle.width) },
+        lastAction: action.type,
+      };
     case 'rotate':
-      return {
-        ...state,
-        activePiece: { ...state.activePiece, rotation: (state.activePiece.rotation + 1) % 4 },
-        lastAction: action.type,
-      };
+      return { ...state, lastAction: action.type };
     case 'soft-drop':
-    case 'hard-drop': {
-      if (state.status !== 'running') {
-        return { ...state, lastAction: action.type };
-      }
-
-      const steps = action.type === 'hard-drop' ? 4 : 1;
-      let nextState = state;
-
-      for (let step = 0; step < steps; step += 1) {
-        nextState = advanceBreakout(nextState);
-        if (nextState.status === 'game-over') break;
-      }
-
-      return {
-        ...nextState,
-        lastAction: action.type,
-      };
-    }
+      return progressBall({ ...state, lastAction: action.type });
+    case 'hard-drop':
+      return progressBall(progressBall({ ...state, lastAction: action.type }));
     case 'tick':
-      return advanceBreakout(state);
+      return progressBall(state);
     default:
       return state;
   }
