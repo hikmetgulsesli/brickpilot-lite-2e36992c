@@ -15,7 +15,7 @@ export type GameplayBrickpilotLiteActionId = "resume-session-1" | "restart-2";
 
 export interface GameplayBrickpilotLiteProps {
   actions?: Partial<Record<GameplayBrickpilotLiteActionId, () => void>>;
-  runtime?: Pick<BrickPilotState, "status" | "score" | "highScore" | "level" | "linesCleared">;
+  runtime?: Pick<BrickPilotState, "status" | "score" | "highScore" | "level" | "lives">;
 }
 
 function formatScore(score: number): string {
@@ -31,10 +31,10 @@ function statusLabel(status: BrickPilotState["status"]): string {
 
 export function GameplayBrickpilotLite({ actions, runtime }: GameplayBrickpilotLiteProps) {
   const status = runtime?.status ?? "paused";
-  const score = runtime?.score ?? 450;
-  const level = runtime?.level ?? 1;
-  const linesCleared = runtime?.linesCleared ?? 0;
+  const score = runtime?.score ?? 0;
   const highScore = runtime?.highScore ?? 0;
+  const level = runtime?.level ?? 1;
+  const lives = runtime?.lives ?? 3;
   const isRunning = status === "running";
 
   return (
@@ -57,10 +57,11 @@ export function GameplayBrickpilotLite({ actions, runtime }: GameplayBrickpilotL
       </div>
       <div className="flex gap-gutter items-center">
       <div className="bg-surface-variant/80 border border-error/30 rounded px-3 py-1 flex items-center gap-2">
-      <span className="font-label-caps text-label-caps text-on-surface-variant">LINES //</span>
+      <span className="font-label-caps text-label-caps text-on-surface-variant">LIVES //</span>
       <div className="flex gap-1 text-error">
-      <Heart  style={{fontVariationSettings: "'FILL' 1"}} className="text-[18px]" aria-hidden={true} focusable="false" />
-      <span className="font-stats-md text-stats-md text-error">{linesCleared.toString().padStart(2, "0")}</span>
+      {Array.from({ length: 3 }, (_, index) => (
+      <Heart key={index} style={index < lives ? {fontVariationSettings: "'FILL' 1"} : undefined} className={`text-[18px] ${index < lives ? "" : "text-surface-variant"}`} aria-hidden={true} focusable="false" />
+      ))}
       </div>
       </div>
       </div>
