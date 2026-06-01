@@ -2,12 +2,10 @@ import { useEffect } from 'react';
 import { GameSettingsBrickpilotLite, GameplayBrickpilotLite } from './screens';
 import { useBrickPilotStore } from './features/brickpilot-lite/brickpilot-lite.store';
 import { brickPilotRepository } from './features/brickpilot-lite/brickpilot-lite.repo';
-import { actReturnToGameplay } from './features/surf-game-settings/act_return_to_gameplay';
-import { actSavePreferences } from './features/surf-game-settings/act_save_preferences';
+import { setBrickPilotTestBridge } from './test/bridge';
 import { actPauseGame } from './features/surf-gameplay/act_pause_game';
 import { actRestartGame } from './features/surf-gameplay/act_restart_game';
 import { actStartGame } from './features/surf-gameplay/act_start_game';
-import { setBrickPilotTestBridge } from './test/bridge';
 
 export default function App() {
   const { state, actions } = useBrickPilotStore();
@@ -19,8 +17,27 @@ export default function App() {
   }, [actions, state]);
 
   useEffect(() => {
+    if (state.status !== 'running') return undefined;
+
+    const tickRate = Math.max(120, 700 - state.preferences.speed * 50);
+    const timer = window.setInterval(() => actions.tick(), tickRate);
+
+    return () => window.clearInterval(timer);
+  }, [actions, state.preferences.speed, state.status]);
+
+  useEffect(() => {
     function handleGameplayShortcut(event: KeyboardEvent) {
       if (state.view !== 'gameplay') return;
+
+      if (event.code === 'ArrowLeft') {
+        event.preventDefault();
+        actions.moveLeft();
+      }
+
+      if (event.code === 'ArrowRight') {
+        event.preventDefault();
+        actions.moveRight();
+      }
 
       if (event.code === 'Space') {
         event.preventDefault();
@@ -49,16 +66,16 @@ export default function App() {
   const settingsActions = {
     'settings-1': actions.openSettings,
     'help-2': actions.openSettings,
-    'exit-to-menu-3': () => actReturnToGameplay(actions),
+    'exit-to-menu-3': actions.returnToGameplay,
     'easy-4': () => actions.setDifficulty('easy'),
     'med-5': () => actions.setDifficulty('medium'),
     'hard-6': () => actions.setDifficulty('hard'),
     'button-7-7': actions.toggleGhostPiece,
     'button-8-8': actions.toggleAudio,
     'purge-high-score-9': actions.purgeHighScore,
-    'return-to-gameplay-10': () => actReturnToGameplay(actions),
-    'save-preferences-11': () => actSavePreferences(actions),
-    'dashboard-1': () => actReturnToGameplay(actions),
+    'return-to-gameplay-10': actions.returnToGameplay,
+    'save-preferences-11': actions.savePreferences,
+    'dashboard-1': actions.returnToGameplay,
     'controls-2': actions.openSettings,
     'audio-3': actions.toggleAudio,
     'support-4': actions.openSettings,
