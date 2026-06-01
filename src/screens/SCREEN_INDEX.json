@@ -1,0 +1,130 @@
+[
+  {
+    "screenId": "dc0d7af86c194076a1a3b8b683e659de",
+    "title": "Gameplay - BrickPilot Lite",
+    "componentName": "GameplayBrickpilotLite",
+    "file": "src/screens/GameplayBrickpilotLite.tsx",
+    "buttons": 2,
+    "inputs": 0,
+    "links": 0,
+    "actions": [
+      {
+        "id": "resume-session-1",
+        "kind": "button",
+        "label": "Resume Session",
+        "index": 0
+      },
+      {
+        "id": "restart-2",
+        "kind": "button",
+        "label": "Restart",
+        "index": 1
+      }
+    ]
+  },
+  {
+    "screenId": "c83c68bda207450a96d36d3f091db717",
+    "title": "Game Settings - BrickPilot Lite",
+    "componentName": "GameSettingsBrickpilotLite",
+    "file": "src/screens/GameSettingsBrickpilotLite.tsx",
+    "buttons": 11,
+    "inputs": 1,
+    "links": 4,
+    "actions": [
+      {
+        "id": "settings-1",
+        "kind": "button",
+        "label": "Settings",
+        "index": 0
+      },
+      {
+        "id": "help-2",
+        "kind": "button",
+        "label": "Help",
+        "index": 1
+      },
+      {
+        "id": "exit-to-menu-3",
+        "kind": "button",
+        "label": "EXIT TO MENU",
+        "index": 2
+      },
+      {
+        "id": "easy-4",
+        "kind": "button",
+        "label": "EASY",
+        "index": 3
+      },
+      {
+        "id": "med-5",
+        "kind": "button",
+        "label": "MED",
+        "index": 4
+      },
+      {
+        "id": "hard-6",
+        "kind": "button",
+        "label": "HARD",
+        "index": 5
+      },
+      {
+        "id": "button-7-7",
+        "kind": "button",
+        "label": "Button 7",
+        "index": 6
+      },
+      {
+        "id": "button-8-8",
+        "kind": "button",
+        "label": "Button 8",
+        "index": 7
+      },
+      {
+        "id": "purge-high-score-9",
+        "kind": "button",
+        "label": "PURGE_HIGH_SCORE",
+        "index": 8
+      },
+      {
+        "id": "return-to-gameplay-10",
+        "kind": "button",
+        "label": "RETURN TO GAMEPLAY",
+        "index": 9
+      },
+      {
+        "id": "save-preferences-11",
+        "kind": "button",
+        "label": "SAVE PREFERENCES",
+        "index": 10
+      },
+      {
+        "id": "dashboard-1",
+        "kind": "link",
+        "label": "DASHBOARD",
+        "href": "#",
+        "index": 0
+      },
+      {
+        "id": "controls-2",
+        "kind": "link",
+        "label": "CONTROLS",
+        "href": "#",
+        "index": 1
+      },
+      {
+        "id": "audio-3",
+        "kind": "link",
+        "label": "AUDIO",
+        "href": "#",
+        "index": 2
+      },
+      {
+        "id": "support-4",
+        "kind": "link",
+        "label": "SUPPORT",
+        "href": "#",
+        "index": 3
+      }
+    ]
+  }
+]

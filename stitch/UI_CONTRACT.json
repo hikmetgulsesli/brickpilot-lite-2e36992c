@@ -1,0 +1,204 @@
+[
+  {
+    "screenId": "dc0d7af86c194076a1a3b8b683e659de",
+    "screenTitle": "Gameplay - BrickPilot Lite",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "button",
+        "label": "Resume Session",
+        "line": 195
+      },
+      {
+        "type": "button",
+        "label": "Restart",
+        "line": 199
+      }
+    ],
+    "navigation": [],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "Resume Session",
+        "line": 195
+      },
+      {
+        "type": "button",
+        "label": "Restart",
+        "line": 199
+      }
+    ],
+    "inputs": [],
+    "hardcodedData": [],
+    "totalInteractive": 2,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  },
+  {
+    "screenId": "c83c68bda207450a96d36d3f091db717",
+    "screenTitle": "Game Settings - BrickPilot Lite",
+    "deviceType": "DESKTOP",
+    "elements": [
+      {
+        "type": "link",
+        "label": "DASHBOARD",
+        "href": "#",
+        "line": 159
+      },
+      {
+        "type": "link",
+        "label": "CONTROLS",
+        "href": "#",
+        "line": 165
+      },
+      {
+        "type": "link",
+        "label": "AUDIO",
+        "href": "#",
+        "line": 171
+      },
+      {
+        "type": "link",
+        "label": "SUPPORT",
+        "href": "#",
+        "line": 177
+      },
+      {
+        "type": "button",
+        "label": "settings",
+        "line": 143
+      },
+      {
+        "type": "button",
+        "label": "help",
+        "line": 146
+      },
+      {
+        "type": "button",
+        "label": "EXIT TO MENU",
+        "line": 184
+      },
+      {
+        "type": "button",
+        "label": "EASY",
+        "line": 210
+      },
+      {
+        "type": "button",
+        "label": "MED",
+        "line": 211
+      },
+      {
+        "type": "button",
+        "label": "HARD",
+        "line": 212
+      },
+      {
+        "type": "button",
+        "label": "PURGE_HIGH_SCORE",
+        "line": 273
+      },
+      {
+        "type": "button",
+        "label": "RETURN TO GAMEPLAY",
+        "line": 282
+      },
+      {
+        "type": "button",
+        "label": "PREFERENCES",
+        "line": 285
+      },
+      {
+        "type": "input",
+        "label": "range",
+        "inputType": "range",
+        "line": 221
+      }
+    ],
+    "navigation": [
+      {
+        "type": "link",
+        "label": "DASHBOARD",
+        "href": "#",
+        "line": 159
+      },
+      {
+        "type": "link",
+        "label": "CONTROLS",
+        "href": "#",
+        "line": 165
+      },
+      {
+        "type": "link",
+        "label": "AUDIO",
+        "href": "#",
+        "line": 171
+      },
+      {
+        "type": "link",
+        "label": "SUPPORT",
+        "href": "#",
+        "line": 177
+      }
+    ],
+    "buttons": [
+      {
+        "type": "button",
+        "label": "settings",
+        "line": 143
+      },
+      {
+        "type": "button",
+        "label": "help",
+        "line": 146
+      },
+      {
+        "type": "button",
+        "label": "EXIT TO MENU",
+        "line": 184
+      },
+      {
+        "type": "button",
+        "label": "EASY",
+        "line": 210
+      },
+      {
+        "type": "button",
+        "label": "MED",
+        "line": 211
+      },
+      {
+        "type": "button",
+        "label": "HARD",
+        "line": 212
+      },
+      {
+        "type": "button",
+        "label": "PURGE_HIGH_SCORE",
+        "line": 273
+      },
+      {
+        "type": "button",
+        "label": "RETURN TO GAMEPLAY",
+        "line": 282
+      },
+      {
+        "type": "button",
+        "label": "PREFERENCES",
+        "line": 285
+      }
+    ],
+    "inputs": [
+      {
+        "type": "input",
+        "label": "range",
+        "inputType": "range",
+        "line": 221
+      }
+    ],
+    "hardcodedData": [],
+    "totalInteractive": 14,
+    "requiresRouter": false,
+    "requiresDragDrop": false
+  }
+]
