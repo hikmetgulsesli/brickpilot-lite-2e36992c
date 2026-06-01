@@ -8,40 +8,59 @@
 // 4. Replace placeholder data with props/state
 
 import { Heart, Play, RefreshCw } from "lucide-react";
+import { type BrickPilotState } from "../features/brickpilot-lite/brickpilot-lite.store";
 
 
 export type GameplayBrickpilotLiteActionId = "resume-session-1" | "restart-2";
 
 export interface GameplayBrickpilotLiteProps {
   actions?: Partial<Record<GameplayBrickpilotLiteActionId, () => void>>;
+  runtime?: Pick<BrickPilotState, "status" | "score" | "highScore" | "level" | "linesCleared">;
 }
 
-export function GameplayBrickpilotLite({ actions }: GameplayBrickpilotLiteProps) {
+function formatScore(score: number): string {
+  return score.toString().padStart(5, "0");
+}
+
+function statusLabel(status: BrickPilotState["status"]): string {
+  if (status === "ready") return "System Ready";
+  if (status === "running") return "Session Live";
+  if (status === "game-over") return "Game Over";
+  return "System Paused";
+}
+
+export function GameplayBrickpilotLite({ actions, runtime }: GameplayBrickpilotLiteProps) {
+  const status = runtime?.status ?? "paused";
+  const score = runtime?.score ?? 450;
+  const level = runtime?.level ?? 1;
+  const linesCleared = runtime?.linesCleared ?? 0;
+  const highScore = runtime?.highScore ?? 0;
+  const isRunning = status === "running";
+
   return (
     <>
       {/* Playfield Container */}
-      <main className="relative w-full max-w-[1200px] aspect-video max-h-[921px] bg-surface-container-lowest border-2 border-primary/40 neon-border rounded flex flex-col m-playfield-margin overflow-hidden">
+      <main className="relative w-full max-w-[1200px] aspect-video max-h-[921px] bg-surface-container-lowest border-2 border-primary/40 neon-border rounded flex flex-col m-playfield-margin overflow-hidden" data-game-status={status}>
       {/* HUD */}
       <header className="absolute top-0 left-0 w-full hud-blur bg-background/50 border-b border-primary/20 p-hud-padding flex justify-between items-center z-20">
       <div className="flex gap-gutter items-center">
       <div className="bg-surface-variant/80 border border-primary/30 rounded px-3 py-1 flex items-center gap-2">
       <span className="font-label-caps text-label-caps text-on-surface-variant">SCORE //</span>
-      <span className="font-stats-md text-stats-md text-primary">00450</span>
+      <span className="font-stats-md text-stats-md text-primary">{formatScore(score)}</span>
       </div>
       </div>
       <div className="flex gap-gutter items-center">
       <div className="bg-surface-variant/80 border border-primary/30 rounded px-3 py-1 flex items-center gap-2">
       <span className="font-label-caps text-label-caps text-on-surface-variant">LVL //</span>
-      <span className="font-stats-md text-stats-md text-primary">01</span>
+      <span className="font-stats-md text-stats-md text-primary">{level.toString().padStart(2, "0")}</span>
       </div>
       </div>
       <div className="flex gap-gutter items-center">
       <div className="bg-surface-variant/80 border border-error/30 rounded px-3 py-1 flex items-center gap-2">
-      <span className="font-label-caps text-label-caps text-on-surface-variant">LIVES //</span>
+      <span className="font-label-caps text-label-caps text-on-surface-variant">LINES //</span>
       <div className="flex gap-1 text-error">
       <Heart  style={{fontVariationSettings: "'FILL' 1"}} className="text-[18px]" aria-hidden={true} focusable="false" />
-      <Heart  style={{fontVariationSettings: "'FILL' 1"}} className="text-[18px]" aria-hidden={true} focusable="false" />
-      <Heart className="text-[18px] text-surface-variant" aria-hidden={true} focusable="false" />
+      <span className="font-stats-md text-stats-md text-error">{linesCleared.toString().padStart(2, "0")}</span>
       </div>
       </div>
       </div>
@@ -92,11 +111,13 @@ export function GameplayBrickpilotLite({ actions }: GameplayBrickpilotLiteProps)
       </div>
       </div>
       {/* Pause Overlay (Active in this state) */}
+      {!isRunning && (
       <div className="absolute inset-0 bg-surface-container-lowest/80 hud-blur flex items-center justify-center z-30">
       <div className="bg-surface-charcoal/90 border-t border-primary p-8 flex flex-col items-center rounded-lg shadow-2xl max-w-md w-full mx-4 relative overflow-hidden">
       {/* Background decorative lines */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
-      <h2 className="font-display-arcade text-headline-lg text-primary mb-6 tracking-widest uppercase">System Paused</h2>
+      <h2 className="font-display-arcade text-headline-lg text-primary mb-6 tracking-widest uppercase">{statusLabel(status)}</h2>
+      <div className="font-label-caps text-label-caps text-on-surface-variant mb-4 uppercase">Best // {formatScore(highScore)}</div>
       <div className="flex flex-col gap-4 w-full mb-8">
       <button className="w-full py-3 border border-primary text-primary font-label-caps text-label-caps uppercase hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(0,219,233,0.3)] transition-colors duration-200 active:scale-95 flex items-center justify-center gap-2" type="button" data-action-id="resume-session-1" onClick={actions?.["resume-session-1"]}>
       <Play className="text-[18px]" aria-hidden={true} focusable="false" />
@@ -119,6 +140,7 @@ export function GameplayBrickpilotLite({ actions }: GameplayBrickpilotLiteProps)
       </div>
       </div>
       </div>
+      )}
       </main>
     </>
   );
